@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.excelcomparison.model.Employee;
 import com.excelcomparison.util.Constants;
+import com.excelcomparison.util.DateUtil;
 import com.excelcomparison.util.NameUtil;
 
 public class EmployeeController {
@@ -29,6 +30,39 @@ public class EmployeeController {
 						result = Constants.CORRECTION;
 					} else {
 						result = Constants.CORRECTION_TRANSFORMATION;
+					}
+				}
+				
+				results.add(result);
+			}
+			
+		} catch(Exception e) {
+			return null;
+		}
+		
+		return results;
+	}
+	
+	public List<String> compareDates(Map<String, String> dates) {
+		List<String> results = new LinkedList<>();
+		
+		try {
+			
+			for(String rawDate : dates.keySet()) {
+				String result = "";
+				String edittedDate = dates.get(rawDate);
+				
+				if(rawDate != null && rawDate != "" && edittedDate != null && edittedDate != "" && !edittedDate.equals(rawDate)) {
+					
+					String rawDateFormat = DateUtil.getDateFormat(rawDate);
+					String edittedDateFormat = DateUtil.getDateFormat(rawDateFormat);
+					
+					if(rawDateFormat != null && edittedDateFormat != null) {
+						if(rawDateFormat.equals(edittedDateFormat)) {
+							// Check for correction
+						} else {
+							// Check Transformation or CT
+						}
 					}
 				}
 				

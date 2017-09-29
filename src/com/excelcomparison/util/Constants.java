@@ -24,4 +24,6 @@ public interface Constants {
 	List<String> TITLES = Arrays.asList("Miss", "Mr", "Mrs", "Dr", "Sir", "Lord", "Jr", "HRH");
 	List<String> QUALIFICATIONS = Arrays.asList("Phd", "MBA", "MBBS");
 	
+	List<String> VALID_DATE_FORMATS = Arrays.asList("DD/MM/YYYY", "DD-MM-YYYY", "d/mm/yy", "MM/DD/YY", "DD-MON-YY");
+	
 }
