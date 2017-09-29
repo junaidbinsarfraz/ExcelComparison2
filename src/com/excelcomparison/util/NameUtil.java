@@ -36,10 +36,17 @@ public class NameUtil {
 			unwantedWords.addAll(Constants.QUALIFICATIONS);
 			
 			for(String namePart : nameParts) {
+				
+				Boolean isUnwantedWord = Boolean.FALSE;
+				
 				for(String unwantedWord : unwantedWords) {
-					if(!(namePart.equals(unwantedWord + ".") || namePart.equals(unwantedWord))) {
-						modifiedName += unwantedWord + " ";
+					if((namePart.equals(unwantedWord + ".") || namePart.equals(unwantedWord))) {
+						isUnwantedWord = Boolean.TRUE;
 					}
+				}
+				
+				if(Boolean.FALSE.equals(isUnwantedWord)) {
+					modifiedName += namePart + " ";
 				}
 			}
 		}

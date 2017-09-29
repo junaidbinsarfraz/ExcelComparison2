@@ -20,7 +20,7 @@ public class EmployeeController {
 				String result = "";
 				String edittedName = names.get(rawName);
 				
-				if(rawName != null && rawName != "" && edittedName != null && edittedName != "" && edittedName.equals(rawName)) {
+				if(rawName != null && rawName != "" && edittedName != null && edittedName != "" && !edittedName.equals(rawName)) {
 					String shortRawName = NameUtil.getShorterName(rawName);
 					
 					if(edittedName.equals(shortRawName)) {

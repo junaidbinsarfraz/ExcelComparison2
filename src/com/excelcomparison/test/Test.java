@@ -2,6 +2,7 @@ package com.excelcomparison.test;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.excelcomparison.controller.EmployeeController;
@@ -24,6 +25,9 @@ public class Test extends Application {
 
 	File datasetA = null;
 	File datasetB = null;
+	File nameDataSet = null;
+	
+	EmployeeController employeeController = new EmployeeController();
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -34,7 +38,7 @@ public class Test extends Application {
 		
 		primaryStage.setTitle("Excel Comparator");
 		
-		Label label = new Label("Please select two datasetfiles");
+		Label label = new Label("Please select names dataset");
 		
 		Button startBtn = new Button("Start Comparison");
 		startBtn.setDisable(Boolean.TRUE);
@@ -43,28 +47,28 @@ public class Test extends Application {
             public void handle(ActionEvent event) {
 				label.setText("Comparing .....");
 				
-				startComparison();
+				startNameComparision();
 				
 				label.setText("Comparison DONE!");
 				
             }
 		});
 		
-		Button buttonDSA = new Button("Select Dataset A");
+		Button buttonDSA = new Button("Select Name Dataset");
 		buttonDSA.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
 				FileChooser fileChooser = new FileChooser();
 				fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Microsoft", "*.xls", "*.xlsx"));
-				datasetA = fileChooser.showOpenDialog(null);
+				nameDataSet = fileChooser.showOpenDialog(null);
 				
-				if(datasetB != null && datasetA != null) {
+				if(nameDataSet != null) {
 					startBtn.setDisable(Boolean.FALSE);
 				}
 			}
 		});
 		
-		Button buttonDSB = new Button("Select Dataset B");
+		/*Button buttonDSB = new Button("Select Dataset B");
 		buttonDSB.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -76,14 +80,14 @@ public class Test extends Application {
 					startBtn.setDisable(Boolean.FALSE);
 				}
 			}
-		});
+		});*/
 		
 		StackPane root = new StackPane();
 		
 		VBox vb = new VBox(10);
 		
 		vb.setAlignment(Pos.CENTER);
-		vb.getChildren().addAll(label, buttonDSA, buttonDSB, startBtn);
+		vb.getChildren().addAll(label, buttonDSA, startBtn);
 		
         root.getChildren().addAll(vb);
         primaryStage.setScene(new Scene(root, 300, 250));
@@ -96,11 +100,21 @@ public class Test extends Application {
 		Map<Integer, Employee> employeesA = FileUtil.readFile(datasetA);
 		Map<Integer, Employee> employeesB = FileUtil.readFile(datasetB);
 		
-		EmployeeController employeeController = new EmployeeController();
-		
 		Map<Integer, Employee> employeesC = employeeController.compare(employeesA, employeesB);
 		
 		FileUtil.writeIntoFile(new ArrayList<Employee>(employeesC.values()));
+		
+	}
+	
+	private void startNameComparision() {
+		
+		Map<String, String> names = FileUtil.readNames(nameDataSet);
+		
+		List<String> results = employeeController.compareNames(names);
+		
+		if(results != null && !results.isEmpty()) {
+			FileUtil.writeNamesResult(names, results);
+		}
 		
 	}
 

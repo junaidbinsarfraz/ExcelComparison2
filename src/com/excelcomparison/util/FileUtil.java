@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -17,6 +19,50 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import com.excelcomparison.model.Employee;
 
 public class FileUtil {
+	
+	public static void writeNamesResult(Map<String, String> names, List<String> results) {
+		// Blank workbook
+		XSSFWorkbook workbook = new XSSFWorkbook();
+
+		// Create a blank sheet
+		XSSFSheet sheet = workbook.createSheet("Result");
+
+		if (names != null && names.size() > 0 && results != null && results.size() > 0) {
+			
+			Set<Entry<String, String>> keys = names.entrySet();
+			
+			Row row = sheet.createRow(0);
+			
+			row.createCell(0).setCellValue("Raw Name");
+			row.createCell(1).setCellValue("Editted Name");
+			row.createCell(2).setCellValue("Category");
+			
+			Integer index = 0;
+			
+			for (String key : names.keySet()) {
+				
+				row = sheet.createRow(index + 1);
+				
+				row.createCell(0).setCellValue(key);
+				row.createCell(1).setCellValue((String) names.get(key));
+				row.createCell(2).setCellValue(results.get(index ++));
+				/*row.createCell(3).setCellValue(employees.get(i).getPosition());
+				row.createCell(4).setCellValue(employees.get(i).getDesignation());
+				row.createCell(5).setCellValue(employees.get(i).getDepartment());
+				row.createCell(6).setCellValue(employees.get(i).getStatus());
+				row.createCell(7).setCellValue(employees.get(i).getRemarks());*/
+			}
+		}
+		
+		try {
+			// Write the workbook in file system
+			FileOutputStream out = new FileOutputStream(new File("Result.xlsx"));
+			workbook.write(out);
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public static Map<String, String> readNames(File file) {
 		Map<String, String> names = new LinkedHashMap<>();
@@ -49,8 +95,8 @@ public class FileUtil {
 
 				if (row != null) {
 					
-					names.put((row.getCell(1) == null || row.getCell(1).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(1).getStringCellValue(), 
-							(row.getCell(2) == null || row.getCell(2).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(2).getStringCellValue());
+					names.put((row.getCell(0) == null || row.getCell(0).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(0).getStringCellValue(), 
+							(row.getCell(1) == null || row.getCell(1).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(1).getStringCellValue());
 					
 					/*Employee employee = new Employee();
 
