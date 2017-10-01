@@ -1,5 +1,6 @@
 package com.excelcomparison.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,20 +49,31 @@ public class EmployeeController {
 		
 		try {
 			
-			for(String rawDate : dates.keySet()) {
+			for(String rawDateStr : dates.keySet()) {
 				String result = "";
-				String edittedDate = dates.get(rawDate);
+				String edittedDateStr = dates.get(rawDateStr);
 				
-				if(rawDate != null && rawDate != "" && edittedDate != null && edittedDate != "" && !edittedDate.equals(rawDate)) {
+				if(rawDateStr != null && rawDateStr != "" && edittedDateStr != null && edittedDateStr != "" && !edittedDateStr.equals(rawDateStr)) {
 					
-					String rawDateFormat = DateUtil.getDateFormat(rawDate);
-					String edittedDateFormat = DateUtil.getDateFormat(rawDateFormat);
+					String rawDateFormat = DateUtil.getDateFormat(rawDateStr);
+					String edittedDateFormat = DateUtil.getDateFormat(edittedDateStr);
 					
 					if(rawDateFormat != null && edittedDateFormat != null) {
+						
+						Date rawDate = DateUtil.getDate(rawDateStr, rawDateFormat);
+						Date edittedDate = DateUtil.getDate(edittedDateStr, edittedDateFormat);
+						
 						if(rawDateFormat.equals(edittedDateFormat)) {
 							// Check for correction
-						} else {
-							// Check Transformation or CT
+							if(rawDate.compareTo(edittedDate) != 0) {
+								result = Constants.CORRECTION;
+							}
+						} else if(rawDate.compareTo(edittedDate) == 0) {
+							// Transformation 
+							result = Constants.TRANSFORMATION;
+						} else if(rawDate.compareTo(edittedDate) != 0) {
+							// Transformation Correction
+							result = Constants.CORRECTION_TRANSFORMATION;
 						}
 					}
 				}

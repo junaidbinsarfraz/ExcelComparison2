@@ -25,4 +25,19 @@ public class DateUtil {
 		return null;
 	}
 	
+	public static Date getDate(String dateStr, String format) {
+		
+		try {
+			
+			SimpleDateFormat simpleDateFormate = new SimpleDateFormat(format);
+			simpleDateFormate.setLenient(Boolean.FALSE);
+			
+			return simpleDateFormate.parse(dateStr);
+			
+		} catch (Exception e) {
+			return null;
+		}
+		
+	}
+	
 }

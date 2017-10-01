@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,7 +21,10 @@ import com.excelcomparison.model.Employee;
 
 public class FileUtil {
 	
-	public static void writeNamesResult(Map<String, String> names, List<String> results) {
+	public static void writeNamesOrDatesResult(Map<String, String> names, List<String> results, Boolean isName) {
+		
+		String appendStr = Boolean.TRUE.equals(isName) ? "Name" : "Date";
+		
 		// Blank workbook
 		XSSFWorkbook workbook = new XSSFWorkbook();
 
@@ -33,8 +37,8 @@ public class FileUtil {
 			
 			Row row = sheet.createRow(0);
 			
-			row.createCell(0).setCellValue("Raw Name");
-			row.createCell(1).setCellValue("Editted Name");
+			row.createCell(0).setCellValue("Raw " + appendStr);
+			row.createCell(1).setCellValue("Editted " + appendStr);
 			row.createCell(2).setCellValue("Category");
 			
 			Integer index = 0;
@@ -56,7 +60,7 @@ public class FileUtil {
 		
 		try {
 			// Write the workbook in file system
-			FileOutputStream out = new FileOutputStream(new File("Result.xlsx"));
+			FileOutputStream out = new FileOutputStream(new File("Result-"+ appendStr +".xlsx"));
 			workbook.write(out);
 			out.close();
 		} catch (Exception e) {
@@ -64,8 +68,9 @@ public class FileUtil {
 		}
 	}
 	
-	public static Map<String, String> readNames(File file) {
-		Map<String, String> names = new LinkedHashMap<>();
+	public static Object readNamesOrDates(File file, Boolean readBothCategories) {
+		Map<String, String> values = new LinkedHashMap<>();
+		List<String> list = new LinkedList<>();
 		
 		try {
 			FileInputStream excelFile = new FileInputStream(file);
@@ -94,20 +99,12 @@ public class FileUtil {
 				row = sheet.getRow(r);
 
 				if (row != null) {
-					
-					names.put((row.getCell(0) == null || row.getCell(0).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(0).getStringCellValue(), 
-							(row.getCell(1) == null || row.getCell(1).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(1).getStringCellValue());
-					
-					/*Employee employee = new Employee();
-
-					employee.setRowId((int) row.getCell(0).getNumericCellValue());
-					employee.setFirstName((row.getCell(1) == null || row.getCell(1).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(1).getStringCellValue());
-					employee.setLastName((row.getCell(2) == null || row.getCell(2).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(2).getStringCellValue());
-					employee.setPosition((row.getCell(3) == null || row.getCell(3).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(3).getStringCellValue());
-					employee.setDesignation((row.getCell(4) == null || row.getCell(4).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(4).getStringCellValue());
-					employee.setDepartment((row.getCell(5) == null || row.getCell(5).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(5).getStringCellValue());
-
-					employees.put(employee.getRowId(), employee);*/
+					if(Boolean.TRUE.equals(readBothCategories)) {
+						values.put((row.getCell(0) == null || row.getCell(0).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(0).getStringCellValue(), 
+								(row.getCell(1) == null || row.getCell(1).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(1).getStringCellValue());
+					} else {
+						list.add((row.getCell(0) == null || row.getCell(0).getCellTypeEnum().equals(XSSFCell.CELL_TYPE_BLANK)) ? "" : row.getCell(0).getStringCellValue());
+					}
 				}
 			}
 		} catch (Exception ioe) {
@@ -115,9 +112,9 @@ public class FileUtil {
 			return null;
 		}
 
-		return names;
+		return Boolean.TRUE.equals(readBothCategories) ? values : list;
 	}
-
+	
 	public static Map<Integer, Employee> readFile(File file) {
 
 		Map<Integer, Employee> employees = new HashMap(0);
