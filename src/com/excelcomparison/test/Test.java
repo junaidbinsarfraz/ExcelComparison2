@@ -1,13 +1,11 @@
 package com.excelcomparison.test;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.excelcomparison.controller.EmployeeController;
-import com.excelcomparison.model.Employee;
 import com.excelcomparison.util.FileUtil;
 
 import javafx.application.Application;
@@ -26,6 +24,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+/**
+ * The class Test is use to make an interface for user and let user to comapare names and dates
+ * @author Junaid
+ */
 public class Test extends Application {
 
 	File datasetA = null;
@@ -44,7 +46,8 @@ public class Test extends Application {
 		primaryStage.setTitle("Excel Comparator");
 		
 		Label label = new Label("Please select dataset");
-		
+	
+		// Left side of grid
 		Button startNameBtn = new Button("Start Name Comparison");
 		startNameBtn.setDisable(Boolean.TRUE);
 		startNameBtn.setOnAction(new EventHandler<ActionEvent>() {
@@ -149,8 +152,8 @@ public class Test extends Application {
 				}
 			}
 		});
-		
-		
+
+		// Boxing the element in vertical order
 		VBox vb1 = new VBox(10);
 		
 		vb1.getChildren().addAll(label1, buttonDSA, buttonDSB, startNameBtn1, startDateBtn1);
@@ -193,18 +196,15 @@ public class Test extends Application {
         primaryStage.show();
 		
 	}
-	
-	private void startComparison() {
-		
-		Map<Integer, Employee> employeesA = FileUtil.readFile(datasetA);
-		Map<Integer, Employee> employeesB = FileUtil.readFile(datasetB);
-		
-		Map<Integer, Employee> employeesC = employeeController.compare(employeesA, employeesB);
-		
-		FileUtil.writeIntoFile(new ArrayList<Employee>(employeesC.values()));
-		
-	}
-	
+
+	/**
+	 * The method startNameComparision() is use to compare employees' name and
+	 * collect result to show on the interface
+	 * 
+	 * @param readBothCategories
+	 *            true the read first two columns from one file else read first
+	 *            columns from both files
+	 */
 	private void startNameComparision(Boolean readBothCategories) {
 		
 		Map<String, String> names = null;
@@ -230,6 +230,14 @@ public class Test extends Application {
 		
 	}
 	
+	/**
+	 * The method startDateComparision is use to compare employees' date and
+	 * collect result to show on the interface
+	 * 
+	 * @param readBothCategories
+	 *            true the read first two columns from one file else read first
+	 *            columns from both files
+	 */
 	private void startDateComparision(Boolean readBothCategories) {
 		
 		Map<String, String> dates = null;
